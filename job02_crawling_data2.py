@@ -27,12 +27,13 @@ driver = webdriver.Chrome(service=service, options=options)
 df_titles = pd.DataFrame()
 
 
-url = 'https://news.naver.com/section/100'
+url = 'https://news.naver.com/section/101'
 # 카테고리 마다 URL 설정
 
+# //*[@id="newsct"]/div[5]/div/div[2]/a
 
 driver.get(url)
-button_xpath = '//*[@id="newsct"]/div[4]/div/div[2]/a'
+button_xpath = '//*[@id="newsct"]/div[5]/div/div[2]/a'
 for i in range(30):
     driver.find_element(By.XPATH, button_xpath).click()
     time.sleep(0.5)
@@ -43,15 +44,16 @@ for i in range(30):
 for i in range(1,180):
     for j in range(1,7):
         try:
-            title_xpath = '//*[@id="newsct"]/div[4]/div/div[1]/div[{}]/ul/li[{}]/div/div/div[2]/a/strong'.format(i,j)
+            # //*[@id="newsct"]/div[5]/div/div[1]/div[2]/ul/li[2]/div/div/div[2]/a/strong
+            title_xpath = '//*[@id="newsct"]/div[5]/div/div[1]/div[{}]/ul/li[{}]/div/div/div[2]/a/strong'.format(i,j)
             title = driver.find_element(By.XPATH, title_xpath).text
             print(title)
             df_section_titles = pd.DataFrame([title], columns=['titles'])
-            df_section_titles['category'] = 'Politics'
+            df_section_titles['category'] = 'Economic'
             df_titles = pd.concat([df_titles, df_section_titles], ignore_index=True)
         except:
             print('error',i,j)
 
-df_titles.to_csv('./data/naver_news_section_Politics.csv', index=False)
+df_titles.to_csv('./data/naver_news_section_Economic.csv', index=False)
 
 
