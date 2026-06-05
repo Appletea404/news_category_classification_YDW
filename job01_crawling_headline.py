@@ -21,7 +21,7 @@ for i in range(6):
     for title in title_tag:
         titles.append(title.text)
     print(titles)
-    df_section_titles = pd.DataFrame(titles, columns=['title'])
+    df_section_titles = pd.DataFrame(titles, columns=['titles'])
     df_section_titles['category'] = category[i]
     df_titles = pd.concat([df_titles, df_section_titles], ignore_index=True)
 print(df_titles.head())
