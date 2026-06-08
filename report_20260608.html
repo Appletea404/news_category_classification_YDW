@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>네이버 뉴스 카테고리 분류 정확도 보고서 - 2026.06.08</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Malgun Gothic', sans-serif; background: #f4f6f9; color: #333; }
+
+    header {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      padding: 36px 48px;
+    }
+    header h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    header p  { font-size: 14px; opacity: 0.85; }
+
+    .container { max-width: 960px; margin: 32px auto; padding: 0 24px; }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
+    .card h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a73e8;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8f0fe;
+    }
+
+    /* 요약 카드 */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .summary-item {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 24px;
+      text-align: center;
+    }
+    .summary-item .label { font-size: 13px; color: #666; margin-bottom: 8px; }
+    .summary-item .value { font-size: 32px; font-weight: 700; }
+    .summary-item .sub   { font-size: 12px; color: #999; margin-top: 4px; }
+    .model-card  .value  { color: #5f6368; }
+    .am-card     .value  { color: #1a73e8; }
+    .pm-card     .value  { color: #e53935; }
+
+    /* 비교 테이블 */
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: #e8f0fe;
+      color: #1a73e8;
+      font-size: 13px;
+      padding: 12px 16px;
+      text-align: center;
+    }
+    tbody td { padding: 12px 16px; text-align: center; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-blue  { background: #e8f0fe; color: #1a73e8; }
+    .badge-red   { background: #fce8e6; color: #e53935; }
+    .badge-gray  { background: #f1f3f4; color: #5f6368; }
+    .badge-down  { background: #fce8e6; color: #e53935; }
+
+    /* 차트 */
+    .chart-wrap { position: relative; height: 280px; }
+
+    /* 분석 */
+    .analysis-box {
+      background: #f8f9ff;
+      border-left: 4px solid #1a73e8;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .analysis-box h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #1a73e8; }
+    .analysis-box p  { font-size: 14px; line-height: 1.7; color: #444; }
+    .analysis-box.warn { border-left-color: #e53935; background: #fff8f8; }
+    .analysis-box.warn h3 { color: #e53935; }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>네이버 뉴스 카테고리 분류 정확도 보고서</h1>
+  <p>날짜: 2026년 06월 08일 &nbsp;|&nbsp; 모델: news_section_classfier0.6669484376907349.h5</p>
+</header>
+
+<div class="container">
+
+  <!-- 요약 카드 3개 -->
+  <div class="summary-grid">
+    <div class="summary-item model-card">
+      <div class="label">모델 학습 정확도</div>
+      <div class="value">66.7%</div>
+      <div class="sub">섹션 데이터 기준 Top-1</div>
+    </div>
+    <div class="summary-item am-card">
+      <div class="label">오전 헤드라인 정확도</div>
+      <div class="value">82.8%</div>
+      <div class="sub">11:34 기준 Top-2</div>
+    </div>
+    <div class="summary-item pm-card">
+      <div class="label">오후 헤드라인 정확도</div>
+      <div class="value">77.8%</div>
+      <div class="sub">14:24 기준 Top-2</div>
+    </div>
+  </div>
+
+  <!-- 비교 테이블 -->
+  <div class="card">
+    <h2>오전 / 오후 정확도 비교</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>구분</th>
+          <th>시간</th>
+          <th>정확도 (Top-2)</th>
+          <th>모델 대비</th>
+          <th>오전 대비</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-gray">모델 기준</span></td>
+          <td>학습 시점</td>
+          <td>66.69%</td>
+          <td>—</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blue">오전</span></td>
+          <td>11:34</td>
+          <td><strong>82.77%</strong></td>
+          <td style="color:#1a73e8">+16.08%p</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-red">오후</span></td>
+          <td>14:24</td>
+          <td><strong>77.78%</strong></td>
+          <td style="color:#1a73e8">+11.09%p</td>
+          <td><span class="badge badge-down">▼ 4.99%p</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 차트 -->
+  <div class="card">
+    <h2>정확도 시각화</h2>
+    <div class="chart-wrap">
+      <canvas id="accuracyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- 원인 분석 -->
+  <div class="card">
+    <h2>변화 원인 분석</h2>
+
+    <div class="analysis-box">
+      <h3>모델 정확도(66.7%) 대비 헤드라인 정확도가 높은 이유</h3>
+      <p>
+        모델 학습 정확도(66.7%)는 <strong>섹션 데이터 기준 Top-1</strong>으로 측정된 값입니다.
+        헤드라인 정확도는 <strong>Top-2 기준</strong>(1순위 또는 2순위 중 하나만 맞아도 정답)이기 때문에
+        구조적으로 더 높게 나옵니다. 또한 오늘 추가 학습 데이터로 인해 tokenizer의
+        어휘량이 늘어(362KB → 497KB) 헤드라인 단어 인식률이 향상된 것도 원인입니다.
+      </p>
+    </div>
+
+    <div class="analysis-box warn">
+      <h3>오전(82.8%) → 오후(77.8%) 정확도 하락 원인</h3>
+      <p>
+        오후 시간대에 새로 게재된 기사들은 <strong>카테고리 경계가 모호한 기사</strong>가
+        늘어날 가능성이 있습니다. 예를 들어 정치·경제가 혼재된 기사나 사회·문화 성격의
+        기사는 모델이 1~2순위 모두 틀리기 쉽습니다. 오전에는 하루의 주요 이슈가
+        명확히 분류되는 기사 위주로 편성되는 반면, 오후에는 다양한 후속 기사와
+        연성 기사가 증가하는 경향이 있습니다.
+      </p>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  Generated by News Classification Pipeline · 2026-06-08
+</footer>
+
+<script>
+  const ctx = document.getElementById('accuracyChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['모델 학습 정확도\n(Top-1, 섹션 기준)', '오전 헤드라인\n(Top-2, 11:34)', '오후 헤드라인\n(Top-2, 14:24)'],
+      datasets: [{
+        label: '정확도 (%)',
+        data: [66.69, 82.77, 77.78],
+        backgroundColor: ['#e8eaf6', '#bbdefb', '#ffcdd2'],
+        borderColor:     ['#5c6bc0', '#1a73e8', '#e53935'],
+        borderWidth: 2,
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.parsed.y.toFixed(2)}%`
+          }
+        },
+        datalabels: { display: false }
+      },
+      scales: {
+        y: {
+          min: 50,
+          max: 100,
+          ticks: {
+            callback: v => v + '%'
+          },
+          grid: { color: '#f0f0f0' }
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

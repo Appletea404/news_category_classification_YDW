@@ -51,7 +51,7 @@ for i in range(len(tokened_x)):
 x_pad = pad_sequences(tokened_x, maxlen=26)
 print(x_pad[:5])
 
-model = load_model('/home/seonmin/PycharmProjects/news_category_classification_YDW/models/news_section_classfier0.694968581199646.h5')
+model = load_model('./models/news_section_classfier0.694968581199646.h5')
 score = model.evaluate(x=x_pad, y=onehot_y, verbose=0)
 print('accuracy', score[1])
 

@@ -27,4 +27,4 @@ for i in range(6):
 print(df_titles.head())
 df_titles.info()
 df_titles.to_csv('./data/naver_headline_news_{}.csv'.format
-                 (datetime.datetime.now().strftime('%Y%m%d')),index=False)
+                 (datetime.datetime.now().strftime('%Y%m%d_%H%M')),index=False)
