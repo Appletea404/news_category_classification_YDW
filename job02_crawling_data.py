@@ -18,7 +18,7 @@ import datetime
 
 options = ChromeOptions()
 options.add_argument('lang=ko_KR')
-options.add_argument('headless')
+# options.add_argument('headless')
 
 service = ChromeService(executable_path=ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service, options=options)
@@ -39,7 +39,6 @@ for i in range(30):
 
 
 
-
 for i in range(1,180):
     for j in range(1,7):
         try:
@@ -52,6 +51,6 @@ for i in range(1,180):
         except:
             print('error',i,j)
 
-df_titles.to_csv('./data/naver_news_section_Politics.csv', index=False)
+df_titles.to_csv('./data/naver_news_section_Politics_HSM.csv', index=False)
 
 
